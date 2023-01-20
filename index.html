@@ -111,6 +111,7 @@ await dbs.collection("books").doc(booktitle.value).set({
   'pages': pages.value,
   'category': category.value,
     'bookUrl':bookUrl,
+   'time': firebase.database.ServerValue.TIMESTAMP,
 });
 alert('File Uploaded');
 }
