@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EBook</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,700" rel="stylesheet">
+
+	<script src="https://use.fontawesome.com/939e9dd52c.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+	<div class="mainDiv" align="left">
+		<h1 align="left">EBook</h1>
+    <!-- <label>Choose File</label>
+		<input type="file" id="fileButton" value="select"/>
+    <progress id="uploader" value="0" max="100">0%</progress>
+    <input type="button" id="upload" value="upload"/> -->
+
+    <!-- <form name="myForm" action="" onsubmit="return uploadDoc()" formMethod=POST formEncType=multipart/form-data> -->
+      Book Title: <input type="text" id="booktitle"><br><br>
+      Description: <input type="text" id="description"><br><br>
+      Pages: <input type="text" id="pages"><br><br>
+      Category: <input type="text" id="category"><br><br><br>
+      Choose File: <input type="file" id="fileButton" value="select" /><br><br><br>
+      <input type="submit" id="upload" value="upload">
+      <progress id="uploader" value="0" max="100">0%</progress>
+    <!-- </form>  -->
+	</div>
+
+
+  <!-- <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script> -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>  
+<script>
+  // Initialize Firebase
+  var bookUrl='';
+  var file='';
+  var booktitle = document.getElementById('booktitle');
+var description = document.getElementById('description');
+var pages = document.getElementById('pages');
+var category = document.getElementById('category');
+  var config = {
+  apiKey: "AIzaSyB_03Zu2u09nBBjwlisaSpsGQfbQYe_Djc",
+  authDomain: "ebook-5904b.firebaseapp.com",
+  projectId: "ebook-5904b",
+  storageBucket: "ebook-5904b.appspot.com",
+  messagingSenderId: "807910106771",
+  appId: "1:807910106771:web:dbe7299b53817222248f66",
+  measurementId: "G-T91LCBMMGG"
+
+
+    // apiKey: "******************************",
+    // authDomain: "******************************",
+    // databaseURL: "******************************",
+    // storageBucket: "******************************",
+    // messagingSenderId: "******************************"
+  };
+  firebase.initializeApp(config);
+  //-------------------------------------
+  
+  
+
+var uploader = document.getElementById('uploader');
+var fileButton = document.getElementById('fileButton');
+var uploadFile=document.getElementById('upload');
+
+  fileButton.addEventListener('change', function(e){
+  file = e.target.files[0];
+  
+});  
+ 
+async function uploadDoc(){
+
+//var choosefile = document.forms["myForm"]["choosefile"].value;
+  if (booktitle == "" ) {
+    alert("Title must be filled out");
+    return false;
+  }else {
+  var storageRef = firebase.storage().ref('books/'+file.name);
+  
+  //console.log(url);
+  var task = storageRef.put(file);
+  bookUrl= await storageRef.getDownloadURL();
+  task.on('state_changed', function progress(snapshot) {
+    var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+    uploader.value = percentage;
+  },
+  function error(err) {},
+  function complete() {
+    uploadFirestoreData();
+  });}
+}
+
+async function uploadFirestoreData(){
+console.log('title');
+  console.log(booktitle.value);
+  let dbs = firebase.firestore()
+
+await dbs.collection("books").doc(booktitle.value).set({
+  'title':booktitle.value,
+  'description': description.value,
+  'pages': pages.value,
+  'category': category.value,
+    'bookUrl':bookUrl,
+});
+alert('File Uploaded');
+}
+
+
+  uploadFile.addEventListener('click', function(e){
+  uploadDoc(); 
+  //uploadFirestoreData();
+  } );
+
+
+
+  
+</script>
+
+
+</script>
+</body>
+</html>
