@@ -91,6 +91,12 @@ async function uploadDoc(){
   function error(err) {},
   function complete() {
     uploadFirestoreData();
+    booktitle.value='';
+    description.value='';
+    pages.value='';
+    category.value='';
+    fileButton.value='';
+    uploader.value='';
   });}
 }
 
